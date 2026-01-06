@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "=== PRE BUILD ==="
+      - aws sts get-caller-identity
+      - aws ecr get-login-password --region ap-south-1 |
+        docker login --username AWS --password-stdin 792557500634.dkr.ecr.ap-south-1.amazonaws.com
+
+  build:
+    commands:
+      - echo "=== BUILD START ==="
+      - pwd
+      - ls -la
+      - ls -la dist || echo "dist NOT FOUND"
+      - ls -la Dockerfile || echo "Dockerfile NOT FOUND"
+      - docker version
+      - docker build -t brain-task-app .
+
+  post_build:
+    commands:
+      - echo "=== PUSH ==="
+      - docker tag brain-task-app:latest 792557500634.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app:latest
+      - docker push 792557500634.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app:latest
+
+
