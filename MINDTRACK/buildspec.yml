@@ -23,5 +23,3 @@ phases:
       - echo "=== PUSH ==="
       - docker tag brain-task-app:latest 792557500634.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app:latest
       - docker push 792557500634.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app:latest
-
-
