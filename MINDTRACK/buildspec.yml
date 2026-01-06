@@ -10,16 +10,21 @@ phases:
 
   build:
     commands:
-      - echo "=== BUILD START ==="
-      - pwd
+      - echo "=== INSTALL DEPENDENCIES ==="
+      - npm install
+
+      - echo "=== BUILD VITE APP ==="
+      - npm run build
+
+      - echo "=== VERIFY DIST ==="
       - ls -la
-      - ls -la dist || echo "dist NOT FOUND"
-      - ls -la Dockerfile || echo "Dockerfile NOT FOUND"
-      - docker version
+      - ls -la dist
+
+      - echo "=== BUILD DOCKER IMAGE ==="
       - docker build -t brain-task-app .
 
   post_build:
     commands:
-      - echo "=== PUSH ==="
+      - echo "=== PUSH IMAGE ==="
       - docker tag brain-task-app:latest 792557500634.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app:latest
       - docker push 792557500634.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app:latest
