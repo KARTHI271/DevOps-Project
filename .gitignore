@@ -1,0 +1,43 @@
+# --- SYSTEM & USER FILES ---
+.*
+!.gitignore
+!.bashrc
+!.profile
+
+# --- SSH & SECRETS ---
+.ssh/
+.aws/
+.gnupg/
+.kube/
+.env
+*.pem
+*.key
+
+# --- PACKAGE & CACHE ---
+.cache/
+.snap/
+.snapshots/
+.snap-store/
+npm/
+node_modules/
+pip/
+__pycache__/
+
+# --- DOCKER ---
+.docker/
+docker-data/
+
+# --- LOGS & HISTORY ---
+*.log
+.bash_history
+.lesshst
+
+# --- EDITORS ---
+.vscode/
+.idea/
+
+# --- SNAP ---
+snap/
+
+# --- TEMP ---
+tmp/
