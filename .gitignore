@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # --- SYSTEM & USER FILES ---
 .*
 !.gitignore
@@ -41,3 +42,10 @@ snap/
 
 # --- TEMP ---
 tmp/
+=======
+node_modules/
+.env
+.terraform/
+*.pem
+*.log
+>>>>>>> dc581f2 (Add gitignore)
