@@ -49,3 +49,4 @@ node_modules/
 *.pem
 *.log
 >>>>>>> dc581f2 (Add gitignore)
+.ssh/
