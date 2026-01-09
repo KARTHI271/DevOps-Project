@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: trend-store
-  labels:
-    app: trend-store
 spec:
   replicas: 2
   selector:
@@ -15,8 +13,7 @@ spec:
         app: trend-store
     spec:
       containers:
-        - name: trend-store
-          image: karthi271/trend-store:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 3000
+      - name: trend-store
+        image: karthi271/trend-store:latest
+        ports:
+        - containerPort: 80
