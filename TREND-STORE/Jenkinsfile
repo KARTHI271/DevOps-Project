@@ -21,6 +21,7 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         sh '''
+          cd TREND-STORE
           docker build -t $IMAGE_NAME .
         '''
       }
@@ -57,6 +58,7 @@ pipeline {
     stage('Deploy to EKS') {
       steps {
         sh '''
+          cd TREND-STORE
           kubectl apply -f Deployment.yaml
           kubectl apply -f Service.yaml
           kubectl rollout status deployment/trend-store
