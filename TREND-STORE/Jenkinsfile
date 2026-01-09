@@ -2,9 +2,12 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME     = "trend-app"
-    DOCKERHUB_REPO = "sudharsanps115/trend-app"
-    DOCKER_CREDS  = "dockerhub-creds"
+    IMAGE_NAME         = "trend-store"
+    DOCKERHUB_REPO     = "karthi271/trend-store"
+    DOCKER_CREDS       = "dockerhub-creds"
+
+    AWS_DEFAULT_REGION = "ap-south-1"
+    EKS_CLUSTER_NAME   = "trend-cluster"
   }
 
   stages {
@@ -26,24 +29,37 @@ pipeline {
     stage('Login & Push Image to DockerHub') {
       steps {
         withCredentials([usernamePassword(
-          credentialsId: "${DOCKER_CREDS}",
+          credentialsId: DOCKER_CREDS,
           usernameVariable: "DOCKER_USER",
           passwordVariable: "DOCKER_PASS"
         )]) {
           sh '''
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker tag $IMAGE_NAME $DOCKERHUB_REPO:${BUILD_NUMBER}
             docker tag $IMAGE_NAME $DOCKERHUB_REPO:latest
+            docker push $DOCKERHUB_REPO:${BUILD_NUMBER}
             docker push $DOCKERHUB_REPO:latest
           '''
         }
       }
     }
 
-    stage('Deploy to Kubernetes') {
+    stage('Configure kubeconfig') {
       steps {
         sh '''
-          kubectl apply --validate=false -f Deployment.yaml
-          kubectl apply --validate=false -f Service.yaml
+          aws eks update-kubeconfig \
+            --region $AWS_DEFAULT_REGION \
+            --name $EKS_CLUSTER_NAME
+        '''
+      }
+    }
+
+    stage('Deploy to EKS') {
+      steps {
+        sh '''
+          kubectl apply -f Deployment.yaml
+          kubectl apply -f Service.yaml
+          kubectl rollout status deployment/trend-store
         '''
       }
     }
@@ -51,10 +67,10 @@ pipeline {
 
   post {
     success {
-      echo "CI/CD Pipeline completed successfully"
+      echo "✅ CI/CD Pipeline completed successfully"
     }
     failure {
-      echo "CI/CD Pipeline failed"
+      echo "❌ CI/CD Pipeline failed"
     }
   }
 }
