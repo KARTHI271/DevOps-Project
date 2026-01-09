@@ -50,3 +50,16 @@ node_modules/
 *.log
 >>>>>>> dc581f2 (Add gitignore)
 .ssh/
+
+.ssh/
+.cache/
+.git/
+.gitmodules
+.bash_history
+.bashrc
+.profile
+.env
+*.pem
+*.key
+node_modules/
+.terraform/
