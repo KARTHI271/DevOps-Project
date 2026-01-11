@@ -1,0 +1,197 @@
+Started by user KARTHI S V
+Obtained TREND-STORE/Jenkinsfile from git https://github.com/KARTHI271/DevOps-Project
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/KARTHI S V
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: git
+using credential dockerhub-creds
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/KARTHI S V/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/KARTHI271/DevOps-Project # timeout=10
+Fetching upstream changes from https://github.com/KARTHI271/DevOps-Project
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/KARTHI271/DevOps-Project +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 2f9105a0fc62082b11308175cafef3ad463e139c (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2f9105a0fc62082b11308175cafef3ad463e139c # timeout=10
+Commit message: "Change directory to TREND-STORE in build and deploy stages"
+ > git rev-list --no-walk 15e9c8cc9c2c5c3e3623f541bcb33c91d30f9914 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout Code)
+[Pipeline] checkout
+The recommended git tool is: git
+using credential dockerhub-creds
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/KARTHI S V/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/KARTHI271/DevOps-Project # timeout=10
+Fetching upstream changes from https://github.com/KARTHI271/DevOps-Project
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/KARTHI271/DevOps-Project +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 2f9105a0fc62082b11308175cafef3ad463e139c (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2f9105a0fc62082b11308175cafef3ad463e139c # timeout=10
+Commit message: "Change directory to TREND-STORE in build and deploy stages"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Docker Image)
+[Pipeline] sh
++ cd TREND-STORE
++ docker build -t trend-store .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  240.8MB
+Step 1/6 : FROM nginx:alpine
+ ---> 04da2b0513cd
+Step 2/6 : RUN rm /etc/nginx/conf.d/default.conf
+ ---> Using cache
+ ---> 8befb6ace9ea
+Step 3/6 : COPY nginx.conf /etc/nginx/conf.d/default.conf
+ ---> 95572144af0a
+Step 4/6 : COPY dist/ /usr/share/nginx/html/
+ ---> 77d3cfe829c1
+Step 5/6 : EXPOSE 80
+ ---> Running in b8bc6c2e20e9
+ ---> Removed intermediate container b8bc6c2e20e9
+ ---> a55224a45758
+Step 6/6 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Running in f40f5177f991
+ ---> Removed intermediate container f40f5177f991
+ ---> 024252101271
+Successfully built 024252101271
+Successfully tagged trend-store:latest
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Login & Push Image to DockerHub)
+[Pipeline] withCredentials
+Masking supported pattern matches of $DOCKER_PASS
+[Pipeline] {
+[Pipeline] sh
++ + docker login -u karthi271 --password-stdin
+echo ****
+
+WARNING! Your credentials are stored unencrypted in '/var/lib/jenkins/.docker/config.json'.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/go/credential-store/
+
+Login Succeeded
++ docker tag trend-store karthi271/trend-store:7
++ docker tag trend-store karthi271/trend-store:latest
++ docker push karthi271/trend-store:7
+The push refers to repository [docker.io/karthi271/trend-store]
+36f45b98df9d: Preparing
+c9a57dd46a14: Preparing
+666ac489d158: Preparing
+e6fe11fa5b7f: Preparing
+67ea0b046e7d: Preparing
+ed5fa8595c7a: Preparing
+8ae63eb1f31f: Preparing
+b3e3d1bbb64d: Preparing
+48078b7e3000: Preparing
+fd1e40d7f74b: Preparing
+7bb20cf5ef67: Preparing
+8ae63eb1f31f: Waiting
+b3e3d1bbb64d: Waiting
+48078b7e3000: Waiting
+fd1e40d7f74b: Waiting
+7bb20cf5ef67: Waiting
+ed5fa8595c7a: Waiting
+666ac489d158: Layer already exists
+e6fe11fa5b7f: Layer already exists
+67ea0b046e7d: Layer already exists
+ed5fa8595c7a: Layer already exists
+8ae63eb1f31f: Layer already exists
+b3e3d1bbb64d: Layer already exists
+48078b7e3000: Layer already exists
+fd1e40d7f74b: Layer already exists
+7bb20cf5ef67: Layer already exists
+c9a57dd46a14: Pushed
+36f45b98df9d: Pushed
+7: digest: sha256:d27d3cba9fa84d5be389398f9113c1da456d601ea5b2a376de2469e13c66beab size: 2614
++ docker push karthi271/trend-store:latest
+The push refers to repository [docker.io/karthi271/trend-store]
+36f45b98df9d: Preparing
+c9a57dd46a14: Preparing
+666ac489d158: Preparing
+e6fe11fa5b7f: Preparing
+67ea0b046e7d: Preparing
+ed5fa8595c7a: Preparing
+8ae63eb1f31f: Preparing
+b3e3d1bbb64d: Preparing
+48078b7e3000: Preparing
+fd1e40d7f74b: Preparing
+7bb20cf5ef67: Preparing
+8ae63eb1f31f: Waiting
+b3e3d1bbb64d: Waiting
+48078b7e3000: Waiting
+fd1e40d7f74b: Waiting
+7bb20cf5ef67: Waiting
+ed5fa8595c7a: Waiting
+666ac489d158: Layer already exists
+e6fe11fa5b7f: Layer already exists
+67ea0b046e7d: Layer already exists
+c9a57dd46a14: Layer already exists
+36f45b98df9d: Layer already exists
+ed5fa8595c7a: Layer already exists
+8ae63eb1f31f: Layer already exists
+b3e3d1bbb64d: Layer already exists
+48078b7e3000: Layer already exists
+fd1e40d7f74b: Layer already exists
+7bb20cf5ef67: Layer already exists
+latest: digest: sha256:d27d3cba9fa84d5be389398f9113c1da456d601ea5b2a376de2469e13c66beab size: 2614
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Configure kubeconfig)
+[Pipeline] sh
++ aws eks update-kubeconfig --region ap-south-1 --name trend-cluster
+Added new context arn:aws:eks:ap-south-1:792557500634:cluster/trend-cluster to /var/lib/jenkins/.kube/config
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy to EKS)
+[Pipeline] sh
++ cd TREND-STORE
++ kubectl apply -f Deployment.yaml
+deployment.apps/trend-store unchanged
++ kubectl apply -f Service.yaml
+service/trend-store-service unchanged
++ kubectl rollout status deployment/trend-store
+deployment "trend-store" successfully rolled out
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+✅ CI/CD Pipeline completed successfully
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
