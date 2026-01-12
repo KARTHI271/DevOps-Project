@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+
+    environment {
+        DEV_REPO  = "karthi271/react-app-dev"
+        PROD_REPO = "karthi271/react-app-prod"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t react-app .'
+            }
+        }
+
+        stage('Push to DEV Repo') {
+            when {
+                branch 'dev'
+            }
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker tag react-app:latest $DEV_REPO:latest
+                    docker push $DEV_REPO:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Push to PROD Repo') {
+            when {
+                branch 'master'
+            }
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker tag react-app:latest $PROD_REPO:latest
+                    docker push $PROD_REPO:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh '''
+                docker rm -f react-container || true
+                docker pull $PROD_REPO:latest
+                docker run -d -p 80:80 --name react-container $PROD_REPO:latest
+                '''
+            }
+        }
+    }
+}
